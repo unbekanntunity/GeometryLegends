@@ -31,12 +31,12 @@ public class Movement : MonoBehaviour
     [SerializeField]
     private float reducedHeight;
 
+    public float currentSpeed;
     private float originalHeight;
     private bool isGrounded = false;
-    public bool isSliding = false;
+    private bool isSliding = false;
     private Vector3 velocity;
     private CharacterController characterController;
-    private float currentSpeed;
 
     private void Awake()
     {
@@ -48,19 +48,17 @@ public class Movement : MonoBehaviour
     {
         isGrounded = Physics.CheckSphere(groundCheck.transform.position, groundDistance, groundMask);
 
-        currentSpeed = speed;
-
-        if (Input.GetKey(slideKey) && Input.GetKey(KeyCode.W) && !isSliding)
+        if (Input.GetKeyDown(slideKey) && Input.GetKey(KeyCode.W) && !isSliding)
         {
-            isSliding = true;
             Sliding();
             Invoke("GetUp", slideDurtion);
         }
         else if (Input.GetKeyUp(slideKey))
         {
-            isSliding = false;
             GetUp();
         }
+        else if (!Input.GetKey(slideKey))
+            currentSpeed = speed;
 
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");
@@ -81,6 +79,7 @@ public class Movement : MonoBehaviour
 
     private void Sliding()
     {
+        isSliding = true;
         characterController.height = Mathf.Lerp(originalHeight, reducedHeight, time);
         currentSpeed *= slideSpeed;
     }
@@ -89,5 +88,6 @@ public class Movement : MonoBehaviour
     {
         characterController.height = Mathf.Lerp(reducedHeight, originalHeight, time);
         currentSpeed = speed;
+        isSliding = false;
     }
 }
