@@ -17,6 +17,8 @@ public class CameraController : MonoBehaviour
     private void Awake()
     {
         camera = GetComponentInChildren<Camera>();
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     void Update()
