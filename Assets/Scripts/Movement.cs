@@ -140,8 +140,6 @@ public class Movement : MonoBehaviour
         camera.transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
         transform.Rotate(Vector3.up * mouseX);
 
-        //Perform the rotations
-        camera.transform.localRotation = Quaternion.Euler(camera.transform.localRotation.x, camera.transform.localRotation.y, wallRunCameraTilt);
     }
 
     private void Gravity()
