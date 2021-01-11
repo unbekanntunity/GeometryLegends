@@ -12,7 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6667ba284743544e9f6c39622fbd72f, type: 3}
   m_Name: Slither
   m_EditorClassIdentifier: 
-  maxhealth: 13
-  currenthealh: 13.06
-  maxmana: 0
-  currentmana: 0
+  maxHealth: 10
+  currentHealth: 2
+  maxMana: 8
+  currentMana: 1
+  currentLvl: 300
+  maxExp: 20
+  currentexp: 12

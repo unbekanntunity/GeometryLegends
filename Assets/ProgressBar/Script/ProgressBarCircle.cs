@@ -48,16 +48,12 @@ public class ProgressBarCircle : MonoBehaviour
         barBackground.sprite = BarBackGroundSprite;
 
         UpdateValue(barValue, 100);
-
-
     }
 
     public void UpdateValue(float val, float maxval)
     {
-        bar.fillAmount = -(val / maxval) + 1f;
-
-        txtTitle.text = Title + " " +Mathf.Round((val / maxval) * 100) + "%";
-
-        barBackground.color = BarColor;
+        bar.fillAmount = val / maxval;
+        Debug.Log(val / maxval);
+        txtTitle.text = Title + " " + (val / maxval) * 100+ "%";
     }
 }

@@ -1,10 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
-
-
-[ExecuteInEditMode]
 
 public class ProgressBar : MonoBehaviour
 {
@@ -16,22 +11,12 @@ public class ProgressBar : MonoBehaviour
     public int TitleFontSize = 10;
 
     [Header("Bar Setting")]
-    public Color BarColor;   
+    public Color BarColor;
     public Color BarBackGroundColor;
     public Sprite BarBackGroundSprite;
-    [Range(1f, 100f)]
-    public int Alert = 20;
-    public Color BarAlertColor;
 
-    [Header("Sound Alert")]
-    public AudioClip sound;
-    public bool repeat = false;
-    public float RepeatRate = 1f;
-
-    private Image bar, barBackground;
-    private float nextPlay;
-    private AudioSource audiosource;
-    private Text txtTitle;
+    public Image bar, barBackground;
+    public Text txtTitle;
     private float barValue;
     public float BarValue
     {
@@ -41,20 +26,9 @@ public class ProgressBar : MonoBehaviour
         {
             value = Mathf.Clamp(value, 0, 100);
             barValue = value;
-            UpdateValue(barValue);
+            UpdateValue(barValue, 100);
 
         }
-    }
-
-        
-
-    private void Awake()
-    {
-        bar = transform.Find("Bar").GetComponent<Image>();
-        barBackground = GetComponent<Image>();
-        txtTitle = transform.Find("Text").GetComponent<Text>();
-        barBackground = transform.Find("BarBackground").GetComponent<Image>();
-        audiosource = GetComponent<AudioSource>();
     }
 
     private void Start()
@@ -65,53 +39,16 @@ public class ProgressBar : MonoBehaviour
         txtTitle.fontSize = TitleFontSize;
 
         bar.color = BarColor;
-        barBackground.color = BarBackGroundColor; 
+        barBackground.color = BarBackGroundColor;
         barBackground.sprite = BarBackGroundSprite;
 
-        UpdateValue(barValue);
-
-
+        UpdateValue(barValue, 100);
     }
 
-    void UpdateValue(float val)
+    public void UpdateValue(float val, float maxVal)
     {
-        bar.fillAmount = val / 100;
-        txtTitle.text = Title + " " + val + "%";
-
-        if (Alert >= val)
-        {
-            bar.color = BarAlertColor;
-        }
-        else
-        {
-            bar.color = BarColor;
-        }
-
+        bar.fillAmount = val / maxVal;
+        txtTitle.text = Title + " " + Mathf.Round((val / maxVal) * 100) + "%";
+        bar.color = BarColor;
     }
-
-
-    private void Update()
-    {
-        if (!Application.isPlaying)
-        {           
-            UpdateValue(50);
-            txtTitle.color = TitleColor;
-            txtTitle.font = TitleFont;
-            txtTitle.fontSize = TitleFontSize;
-
-            bar.color = BarColor;
-            barBackground.color = BarBackGroundColor;
-
-            barBackground.sprite = BarBackGroundSprite;           
-        }
-        else
-        {
-            if (Alert >= barValue && Time.time > nextPlay)
-            {
-                nextPlay = Time.time + RepeatRate;
-                audiosource.PlayOneShot(sound);
-            }
-        }
-    }
-
 }
