@@ -121,6 +121,9 @@ public class Movement : MonoBehaviour
         {
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
         }
+
+        //if(Input.GetMouseButtonDown(0))
+            
     }
 
     private void Look()

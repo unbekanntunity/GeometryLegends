@@ -8,6 +8,8 @@ public class GetStats : MonoBehaviour
     public ProgressBar healthBar;
     public ProgressBar manaBar;
 
+    public Skill lastUsedSkill;
+
     private void Update()
     {
         expBarCircle.UpdateValue(hero.currentexp, hero.maxExp);
