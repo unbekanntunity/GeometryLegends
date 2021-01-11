@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Slither
   m_EditorClassIdentifier: 
   maxhealth: 13
-  currenthealh: 6.7
+  currenthealh: 13.06
   maxmana: 0
   currentmana: 0

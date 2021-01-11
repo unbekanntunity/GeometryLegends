@@ -58,20 +58,20 @@ public class Movement : MonoBehaviour
     private float mouseSensitivity = 100f;
 
     private float xRotation = 0f;
-    private Camera camera;
+    private Camera maincamera;
 
     private float currentSpeed;
     private float originalHeight;
-    private bool isGrounded = false;
+    public bool isGrounded = false;
     private bool isSliding = false;
-    public bool isWallRunning = false;
-
+    private bool isWallRunning = false;
+    public Vector3 move;
     private Vector3 velocity;
     private CharacterController characterController;
 
     private void Awake()
     {
-        camera = GetComponentInChildren<Camera>();
+        maincamera = GetComponentInChildren<Camera>();
         characterController = GetComponent<CharacterController>();
         originalHeight = characterController.height;
         Cursor.lockState = CursorLockMode.Locked;
@@ -95,7 +95,11 @@ public class Movement : MonoBehaviour
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");
 
-        Vector3 move = transform.right * x + transform.forward * z;
+        if (isWallRunning)
+            if (z < 0)
+                z = 0;
+
+        move = transform.right * x + transform.forward * z;
         characterController.Move(move * currentSpeed * Time.deltaTime);
 
         if (Input.GetKeyDown(slideKey) && Input.GetKey(KeyCode.W) && !isSliding && isGrounded)
@@ -137,7 +141,7 @@ public class Movement : MonoBehaviour
 
         xRotation -= mouseY;
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
-        camera.transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+        maincamera.transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
         transform.Rotate(Vector3.up * mouseX);
 
     }
@@ -152,7 +156,7 @@ public class Movement : MonoBehaviour
             velocity.y += gravity * Time.deltaTime;
             characterController.Move(velocity * Time.deltaTime);
         }
-        else if (isWallRunning)
+        else if (isWallRunning && !Input.GetKey(jumpKey))
         {
             velocity.y = wallrunGravity * Time.deltaTime;
             characterController.Move(velocity * Time.deltaTime);
@@ -199,14 +203,6 @@ public class Movement : MonoBehaviour
         isWallRunning = false;
     }
 
-    private void LastJump()
-    {
-        if (Input.GetKey(jumpKey))
-        {
-            velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
-        }
-    }
-
     private void CheckForWall()
     {
         isWallRight = Physics.Raycast(transform.position, transform.right, wallrunDistance + 0.8f, wall);
@@ -216,8 +212,6 @@ public class Movement : MonoBehaviour
 
         if (!isWallLeft && !isWallRight)
         {
-            if (isWallRunning)
-                LastJump();
             StopWallrun();
         }
     }
