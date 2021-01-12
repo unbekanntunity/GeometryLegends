@@ -16,6 +16,25 @@ MonoBehaviour:
   currentHealth: 2
   maxMana: 8
   currentMana: 1
+  physicalATK: 0
+  armor: 0
+  physicalPEN: 0
+  Lifesteal: 0
+  healthRegen: 0
+  manaRegen: 0
+  magicPower: 0
+  magicRES: 0
+  magicPEN: 0
+  spellVamp: 0
+  movementSPD: 0
+  cdReduction: 0
+  attackSpeed: 0
+  critChance: 0
   currentLvl: 300
   maxExp: 20
   currentexp: 12
+  abilities:
+  - {fileID: 11400000, guid: e0474fe1473e8e24e9dcd6bce89731d6, type: 2}
+  - {fileID: 11400000, guid: e0474fe1473e8e24e9dcd6bce89731d6, type: 2}
+  - {fileID: 11400000, guid: e0474fe1473e8e24e9dcd6bce89731d6, type: 2}
+  - {fileID: 11400000, guid: e0474fe1473e8e24e9dcd6bce89731d6, type: 2}

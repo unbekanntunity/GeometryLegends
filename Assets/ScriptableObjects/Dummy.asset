@@ -33,3 +33,5 @@ MonoBehaviour:
   currentLvl: 4
   maxExp: 90
   currentexp: 30
+  abilities:
+  - {fileID: 0}

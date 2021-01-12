@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public enum HeroType
 {
@@ -37,4 +38,6 @@ public class Hero : ScriptableObject
     public float currentLvl;
     public float maxExp;
     public float currentexp;
+
+    public List<Skill> abilities = new List<Skill>();
 }

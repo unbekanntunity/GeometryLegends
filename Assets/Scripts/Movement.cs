@@ -1,7 +1,11 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class Movement : MonoBehaviour
 {
+    [SerializeField]
+    private KeyCode[] AbilityControls = new KeyCode[4];
+
     [SerializeField]
     private KeyCode jumpKey;
     [SerializeField]
@@ -40,8 +44,8 @@ public class Movement : MonoBehaviour
     [SerializeField]
     private float wallrunDistance;
 
-    public bool isWallRight;
-    public bool isWallLeft;
+    private bool isWallRight;
+    private bool isWallLeft;
 
     [SerializeField]
     private GameObject groundCheck;
@@ -62,16 +66,18 @@ public class Movement : MonoBehaviour
 
     private float currentSpeed;
     private float originalHeight;
-    public bool isGrounded = false;
+    private bool isGrounded = false;
     private bool isSliding = false;
     private bool isWallRunning = false;
     public Vector3 move;
     private Vector3 velocity;
     private CharacterController characterController;
+    private GetStats getStats;
 
     private void Awake()
     {
         maincamera = GetComponentInChildren<Camera>();
+        getStats = GetComponent<GetStats>();
         characterController = GetComponent<CharacterController>();
         originalHeight = characterController.height;
         Cursor.lockState = CursorLockMode.Locked;
@@ -82,6 +88,7 @@ public class Movement : MonoBehaviour
     {
         MyInput();
         Look();
+        CheckForAbilities();
         CheckForWall();
         WallrunInput();
         Gravity();
@@ -107,6 +114,7 @@ public class Movement : MonoBehaviour
             Sliding();
             Invoke("GetUp", slideDurtion);
         }
+
         else if (Input.GetKeyUp(slideKey))
         {
             GetUp();
@@ -147,6 +155,15 @@ public class Movement : MonoBehaviour
         maincamera.transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
         transform.Rotate(Vector3.up * mouseX);
 
+    }
+
+    private void CheckForAbilities()
+    {
+        for(int i = 0; i < getStats.hero.abilities.Count; i++)
+        {
+            if (Input.GetKeyDown(AbilityControls[i]))
+                getStats.lastUsedSkill = getStats.hero.abilities[i];
+        }
     }
 
     private void Gravity()

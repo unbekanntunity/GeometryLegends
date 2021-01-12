@@ -53,7 +53,6 @@ public class ProgressBarCircle : MonoBehaviour
     public void UpdateValue(float val, float maxval)
     {
         bar.fillAmount = val / maxval;
-        Debug.Log(val / maxval);
         txtTitle.text = Title + " " + (val / maxval) * 100+ "%";
     }
 }
