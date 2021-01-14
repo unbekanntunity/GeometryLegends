@@ -8,16 +8,11 @@ public class GetSkillIcons : MonoBehaviour
     public Hero hero;
     public List<Image> icons = new List<Image>();
 
-    private void Awake()
-    {
-        icons.AddRange(GetComponentsInChildren<Image>());
-    }
-
     private void UpdateIcons()
     {
         for (int i = 0; i < hero.abilities.Count; i++)
         {
-            icons[i].sprite = hero.abilities[i].skillIcon;
+            icons[i].GetComponentInChildren<Image>().sprite = hero.abilities[i].skillIcon;
         }
     }
 

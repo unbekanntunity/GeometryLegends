@@ -8,13 +8,19 @@ public class GetStats : MonoBehaviour
     public ProgressBar healthBar;
     public ProgressBar manaBar;
 
-    public Skill lastUsedSkill;
+    public Skill selectedSkill;
     private GetSkillIcons getSkillIcons;
+
+    [SerializeField]
+    private bool HaveSkillIcons = false;
 
     private void Awake()
     {
-        getSkillIcons = GetComponentInChildren<GetSkillIcons>();
-        getSkillIcons.SetHero(hero);
+        if (HaveSkillIcons)
+        {
+            getSkillIcons = GetComponentInChildren<GetSkillIcons>();
+            getSkillIcons.SetHero(hero);
+        }
     }
 
     private void Update()

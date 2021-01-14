@@ -6,6 +6,8 @@ public class DamageHandler : MonoBehaviour
 {
     public static void DealDamage(GetStats user, GetStats target)
     {
-        target.hero.currentHealth -= user.lastUsedSkill.baseDamage;
+        Debug.Log("A");
+        if(target.hero.currentHealth > 0)
+            target.hero.currentHealth -= user.selectedSkill.baseDamage;
     }
 }

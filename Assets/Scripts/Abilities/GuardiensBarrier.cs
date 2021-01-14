@@ -7,6 +7,6 @@ public class GuardiensBarrier : Skill
 {
     public override void CastSkill(GameObject user, GameObject target)
     {
-        user.GetComponent<GetStats>().lastUsedSkill = this;
+        user.GetComponent<GetStats>().selectedSkill = this;
     }
 }

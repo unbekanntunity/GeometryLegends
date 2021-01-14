@@ -40,4 +40,6 @@ public class Hero : ScriptableObject
     public float currentexp;
 
     public List<Skill> abilities = new List<Skill>();
+
+    public Skill basicAttack;
 }

@@ -13,9 +13,11 @@ MonoBehaviour:
   m_Name: GuardiensBarrier
   m_EditorClassIdentifier: 
   damageType: 1
+  skillType: 1
   skillName: Guardiens Barrier
   manaCost: 0
   cooldown: 0
-  baseDamage: 0
+  baseDamage: 11
   additionalPercent: 0
+  range: 10
   skillIcon: {fileID: 21300000, guid: f8a0997c30b33fd42998800317e977d3, type: 3}

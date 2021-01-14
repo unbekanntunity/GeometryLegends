@@ -69,16 +69,23 @@ public class Movement : MonoBehaviour
     private bool isGrounded = false;
     private bool isSliding = false;
     private bool isWallRunning = false;
-    public Vector3 move;
+
+    private Vector3 move;
     private Vector3 velocity;
     private CharacterController characterController;
     private GetStats getStats;
+    private GetSkillIcons skillIcons;
+    private SphereCollider colliderForRange;
+    public List<GetStats> targetsInRange = new List<GetStats>();
 
     private void Awake()
     {
+        skillIcons = GetComponentInChildren<GetSkillIcons>();
         maincamera = GetComponentInChildren<Camera>();
-        getStats = GetComponent<GetStats>();
         characterController = GetComponent<CharacterController>();
+        colliderForRange = GetComponent<SphereCollider>();
+        getStats = GetComponent<GetStats>();
+        getStats.selectedSkill = getStats.hero.basicAttack;
         originalHeight = characterController.height;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -89,6 +96,7 @@ public class Movement : MonoBehaviour
         MyInput();
         Look();
         CheckForAbilities();
+        CreateRangeField();
         CheckForWall();
         WallrunInput();
         Gravity();
@@ -131,7 +139,6 @@ public class Movement : MonoBehaviour
         }
 
         //if(Input.GetMouseButtonDown(0))
-            
     }
 
     private void Look()
@@ -159,10 +166,49 @@ public class Movement : MonoBehaviour
 
     private void CheckForAbilities()
     {
-        for(int i = 0; i < getStats.hero.abilities.Count; i++)
+        for (int i = 0; i < AbilityControls.Length; i++)
         {
             if (Input.GetKeyDown(AbilityControls[i]))
-                getStats.lastUsedSkill = getStats.hero.abilities[i];
+            {
+                for (int m = 0; m < skillIcons.icons.Count - 1; m++)
+                    skillIcons.icons[m].enabled = false;
+
+                if (skillIcons.icons[i].enabled)
+                {
+                    getStats.selectedSkill = getStats.hero.basicAttack;
+                    skillIcons.icons[i].enabled = false;
+                }
+                else
+                {
+                    getStats.selectedSkill = getStats.hero.abilities[i];
+                    skillIcons.icons[i].enabled = true;
+                }
+            }
+        }
+    }
+
+
+    private void CreateRangeField()
+    {
+        targetsInRange.Remove(getStats);
+
+        colliderForRange.radius = getStats.selectedSkill.range;
+        Debug.DrawRay(transform.position, transform.forward, Color.red);
+        
+        if (getStats.selectedSkill.skillType == SkillType.SingleTarget && Input.GetMouseButtonDown(0))
+        {
+            RaycastHit hit;
+            if (Physics.Raycast(maincamera.transform.position, maincamera.transform.forward, out hit, getStats.selectedSkill.range))
+            {
+                foreach (GetStats item in targetsInRange)
+                {
+                    if (hit.collider.gameObject.GetComponent<GetStats>() == item)
+                    {
+                        DamageHandler.DealDamage(getStats, hit.collider.gameObject.GetComponent<GetStats>());
+                        break;
+                    }
+                }
+            }
         }
     }
 
@@ -234,6 +280,19 @@ public class Movement : MonoBehaviour
         {
             StopWallrun();
         }
+    }
+    private void OnTriggerStay(Collider other)
+    {
+        bool found = false;
+
+        foreach (GetStats item in targetsInRange)
+        {
+            if (item == other.gameObject.GetComponent<GetStats>())
+                found = true;
+        }
+
+        if (!found)
+            targetsInRange.Add(other.gameObject.GetComponent<GetStats>());
     }
 }
 /*  if (Mathf.Abs(wallRunCameraTilt) < maxWallRunCameraTilt && isWallRunning && isWallRight)
