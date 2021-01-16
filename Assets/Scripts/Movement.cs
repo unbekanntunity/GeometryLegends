@@ -4,6 +4,9 @@ using UnityEngine;
 public class Movement : MonoBehaviour
 {
     [SerializeField]
+    private Camera playerCamera;
+
+    [SerializeField]
     private KeyCode[] AbilityControls = new KeyCode[4];
 
     [SerializeField]
@@ -27,7 +30,7 @@ public class Movement : MonoBehaviour
     [SerializeField]
     private float slideDurtion = 3f;
     [SerializeField]
-    private float time;
+    private float slideLerpTime;
 
     [SerializeField]
     private LayerMask wall;
@@ -44,8 +47,16 @@ public class Movement : MonoBehaviour
     [SerializeField]
     private float wallrunDistance;
 
-    private bool isWallRight;
-    private bool isWallLeft;
+    [SerializeField]
+    private float aimFOV;
+    [SerializeField]
+    private float aimFOVLerpTime;
+    [SerializeField]
+    private float aimSpeed;
+
+    [SerializeField]
+    private GameObject weaponPos;
+    public GameObject WeaponPos { get { return weaponPos; } private set { weaponPos = value; } }
 
     [SerializeField]
     private GameObject groundCheck;
@@ -61,14 +72,16 @@ public class Movement : MonoBehaviour
     [SerializeField]
     private float mouseSensitivity = 100f;
 
+    private float normalFOV = 60f;
     private float xRotation = 0f;
-    private Camera maincamera;
-
-    private float currentSpeed;
+    public float currentSpeed;
     private float originalHeight;
-    private bool isGrounded = false;
-    private bool isSliding = false;
-    private bool isWallRunning = false;
+    private bool isWallRight = false;
+    private bool isWallLeft = false;
+    public bool isGrounded = false;
+    public bool isSliding = false;
+    public bool isWallRunning = false;
+    public bool isAiming = false;
 
     private Vector3 move;
     private Vector3 velocity;
@@ -81,7 +94,6 @@ public class Movement : MonoBehaviour
     private void Awake()
     {
         skillIcons = GetComponentInChildren<GetSkillIcons>();
-        maincamera = GetComponentInChildren<Camera>();
         characterController = GetComponent<CharacterController>();
         colliderForRange = GetComponent<SphereCollider>();
         getStats = GetComponent<GetStats>();
@@ -89,6 +101,8 @@ public class Movement : MonoBehaviour
         originalHeight = characterController.height;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+
+        normalFOV = playerCamera.fieldOfView;
     }
 
     void Update()
@@ -122,23 +136,40 @@ public class Movement : MonoBehaviour
             Sliding();
             Invoke("GetUp", slideDurtion);
         }
-
         else if (Input.GetKeyUp(slideKey))
         {
             GetUp();
         }
-        else if (!Input.GetKey(slideKey))
-            currentSpeed = speed;
 
-        if (isWallRunning)
-            currentSpeed = maxwallrunSpeed;
+        if (Input.GetMouseButton(1) && !isAiming)
+            StartAim();
+        else if (Input.GetMouseButtonUp(1))
+            EndAim();
+
+        if (!isWallRunning && !isAiming && !isSliding)
+            currentSpeed = speed;
 
         if (Input.GetKeyDown(jumpKey) && (isGrounded || isWallRunning))
         {
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
         }
+    }
 
-        //if(Input.GetMouseButtonDown(0))
+
+    private void StartAim()
+    {
+        print("A");
+        isAiming = true;
+        currentSpeed *= aimSpeed;
+        playerCamera.fieldOfView = Mathf.Lerp(normalFOV, aimFOV, aimFOVLerpTime);
+    }
+
+    private void EndAim()
+    {
+        print("AA");
+        playerCamera.fieldOfView = Mathf.Lerp(aimFOV, normalFOV, aimFOVLerpTime);
+        currentSpeed = speed;
+        isAiming = false;
     }
 
     private void Look()
@@ -159,7 +190,7 @@ public class Movement : MonoBehaviour
 
         xRotation -= mouseY;
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
-        maincamera.transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+        playerCamera.transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
         transform.Rotate(Vector3.up * mouseX);
 
     }
@@ -194,20 +225,29 @@ public class Movement : MonoBehaviour
 
         colliderForRange.radius = getStats.selectedSkill.range;
         Debug.DrawRay(transform.position, transform.forward, Color.red);
-        
-        if (getStats.selectedSkill.skillType == SkillType.SingleTarget && Input.GetMouseButtonDown(0))
+
+        if (Input.GetMouseButtonDown(0))
         {
-            RaycastHit hit;
-            if (Physics.Raycast(maincamera.transform.position, maincamera.transform.forward, out hit, getStats.selectedSkill.range))
+            if (getStats.selectedSkill.skillType == SkillType.SingleTarget && getStats.selectedSkill.needTarget)
             {
-                foreach (GetStats item in targetsInRange)
+
+                RaycastHit hit;
+                if (Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out hit, getStats.selectedSkill.range))
                 {
-                    if (hit.collider.gameObject.GetComponent<GetStats>() == item)
+                    foreach (GetStats item in targetsInRange)
                     {
-                        DamageHandler.DealDamage(getStats, hit.collider.gameObject.GetComponent<GetStats>());
-                        break;
+                        if (hit.collider.gameObject.GetComponent<GetStats>() == item)
+                        {
+                            getStats.selectedSkill.CastSkill(gameObject, hit.collider.gameObject);
+                            break;
+                        }
                     }
                 }
+
+            }
+            else
+            {
+                getStats.selectedSkill.CastSkill(gameObject);
             }
         }
     }
@@ -232,19 +272,16 @@ public class Movement : MonoBehaviour
     private void Sliding()
     {
         isSliding = true;
-        characterController.height = Mathf.Lerp(originalHeight, reducedHeight, time);
+        characterController.height = Mathf.Lerp(originalHeight, reducedHeight, slideLerpTime);
         currentSpeed *= slideSpeed;
     }
 
     private void GetUp()
     {
         isSliding = false;
-        characterController.height = Mathf.Lerp(reducedHeight, originalHeight, time);
-        currentSpeed = speed;
+        characterController.height = Mathf.Lerp(reducedHeight, originalHeight, slideLerpTime);
         if (Input.GetKey(jumpKey))
-        {
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
-        }
     }
 
     private void WallrunInput()
@@ -276,11 +313,13 @@ public class Movement : MonoBehaviour
         isWallLeft = Physics.Raycast(transform.position, -transform.right, wallrunDistance, wall);
         Debug.DrawRay(transform.position, -transform.right, Color.red);
 
+        if (isWallRunning)
+            currentSpeed = maxwallrunSpeed;
+
         if (!isWallLeft && !isWallRight)
-        {
             StopWallrun();
-        }
     }
+
     private void OnTriggerStay(Collider other)
     {
         bool found = false;

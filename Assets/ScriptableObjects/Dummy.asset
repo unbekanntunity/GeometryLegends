@@ -12,8 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6667ba284743544e9f6c39622fbd72f, type: 3}
   m_Name: Dummy
   m_EditorClassIdentifier: 
+  heroName: 
+  heroPic: {fileID: 0}
   maxHealth: 300
-  currentHealth: 201
+  currentHealth: 28.61
   maxMana: 22
   currentMana: 1
   physicalATK: 0

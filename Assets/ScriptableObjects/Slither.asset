@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6667ba284743544e9f6c39622fbd72f, type: 3}
   m_Name: Slither
   m_EditorClassIdentifier: 
+  heroName: 
+  heroPic: {fileID: 0}
   maxHealth: 300
   currentHealth: 300
   maxMana: 8
@@ -39,4 +41,4 @@ MonoBehaviour:
   - {fileID: 11400000, guid: e0474fe1473e8e24e9dcd6bce89731d6, type: 2}
   - {fileID: 11400000, guid: e0474fe1473e8e24e9dcd6bce89731d6, type: 2}
   - {fileID: 11400000, guid: e0474fe1473e8e24e9dcd6bce89731d6, type: 2}
-  basicAttack: {fileID: 11400000, guid: e0474fe1473e8e24e9dcd6bce89731d6, type: 2}
+  basicAttack: {fileID: 11400000, guid: 20ecd76fbcd70e44599fd354a0f284b8, type: 2}

@@ -14,6 +14,9 @@ public enum DamageType
 [CreateAssetMenu(fileName = "New Hero", menuName = "Hero")]
 public class Hero : ScriptableObject
 {
+    public string heroName;
+    public Sprite heroPic;
+
     public float maxHealth;
     public float currentHealth;
     public float maxMana;
@@ -42,4 +45,5 @@ public class Hero : ScriptableObject
     public List<Skill> abilities = new List<Skill>();
 
     public Skill basicAttack;
+
 }

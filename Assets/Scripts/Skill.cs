@@ -17,8 +17,11 @@ public abstract class Skill : ScriptableObject
     public float baseDamage;
     public float additionalPercent;
     public float range;
+    public bool needTarget;
 
     public Sprite skillIcon; 
 
     public abstract void CastSkill(GameObject user, GameObject target);
+    public abstract void CastSkill(GameObject user);
+
 }
