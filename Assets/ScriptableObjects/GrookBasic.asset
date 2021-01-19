@@ -22,5 +22,5 @@ MonoBehaviour:
   range: 10
   needTarget: 0
   skillIcon: {fileID: 21300000, guid: 3649a660a7b03e54fb1cbd359a101afe, type: 3}
-  projectile: {fileID: 4065805027631901853, guid: 9efaa2c481d4c0744b7bb1509da2dd4a,
+  projectileObject: {fileID: 4065805027631901853, guid: 9efaa2c481d4c0744b7bb1509da2dd4a,
     type: 3}

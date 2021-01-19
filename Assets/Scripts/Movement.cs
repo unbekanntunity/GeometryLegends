@@ -191,8 +191,8 @@ public class Movement : MonoBehaviour
         xRotation -= mouseY;
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
         playerCamera.transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+        weaponPos.transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
         transform.Rotate(Vector3.up * mouseX);
-
     }
 
     private void CheckForAbilities()
@@ -247,7 +247,9 @@ public class Movement : MonoBehaviour
             }
             else
             {
-                getStats.selectedSkill.CastSkill(gameObject);
+                RaycastHit hit;
+                if(Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out hit, 1000f))
+                    getStats.selectedSkill.CastSkill(gameObject, hit.point);
             }
         }
     }

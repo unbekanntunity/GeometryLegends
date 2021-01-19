@@ -22,6 +22,7 @@ public abstract class Skill : ScriptableObject
     public Sprite skillIcon; 
 
     public abstract void CastSkill(GameObject user, GameObject target);
+    public abstract void CastSkill(GameObject user, Vector3 targetPoint);
     public abstract void CastSkill(GameObject user);
 
 }

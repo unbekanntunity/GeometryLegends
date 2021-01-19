@@ -16,4 +16,10 @@ public class GuardiensBarrier : Skill
         Debug.Log("barrier, Single, noneed");
         user.GetComponent<GetStats>().selectedSkill = this;
     }
+
+    public override void CastSkill(GameObject user, Vector3 targetPoint)
+    {
+        Debug.Log("barrier, Single, noneed");
+        user.GetComponent<GetStats>().selectedSkill = this;
+    }
 }
