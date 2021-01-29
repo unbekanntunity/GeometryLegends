@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6667ba284743544e9f6c39622fbd72f, type: 3}
+  m_Name: Slither
+  m_EditorClassIdentifier: 
+  heroName: 
+  heroPic: {fileID: 0}
+  maxHealth: 300
+  currentHealth: 289
+  maxMana: 8
+  currentMana: 1
+  physicalATK: 0
+  armor: 0
+  physicalPEN: 0
+  physicalLifesteal: 0
+  spellVamp: 0
+  healthRegen: 0
+  manaRegen: 0
+  magicPower: 0
+  magicRES: 0
+  magicPEN: 0
+  magicalLifesteal: 0
+  movementSPD: 0
+  cdReduction: 0
+  attackSpeed: 0
+  critChance: 0
+  currentLvl: 300
+  maxExp: 20
+  currentexp: 12
+  abilities:
+  - {fileID: 1602204466142832365, guid: f0c79bb976c4dd94f9db69e889e46f4a, type: 3}
+  - {fileID: 8684120002475111647, guid: 173a31b43056c4b4f9c8da0cbece37d8, type: 3}
+  - {fileID: 6300605642573231433, guid: 4610d9f1db773e345bf7cdba3aa0440a, type: 3}
+  - {fileID: 6300605642573231433, guid: 4610d9f1db773e345bf7cdba3aa0440a, type: 3}
+  - {fileID: 6300605642573231433, guid: 4610d9f1db773e345bf7cdba3aa0440a, type: 3}
+  basicAttack: {fileID: 9122480338979111352, guid: 22315eaeae360494e870824de0d8f9df,
+    type: 3}

@@ -6,13 +6,13 @@ using UnityEngine.UI;
 public class GetSkillIcons : MonoBehaviour
 {
     public Hero hero;
-    public List<Image> icons = new List<Image>();
+    public List<IconController> icons = new List<IconController>();
 
     private void UpdateIcons()
     {
         for (int i = 0; i < hero.abilities.Count; i++)
         {
-            icons[i].GetComponentInChildren<Image>().sprite = hero.abilities[i].skillIcon;
+            icons[i].setIcon(hero.abilities[i].GetComponent<Skill>().skillIcon);
         }
     }
 

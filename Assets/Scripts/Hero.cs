@@ -24,14 +24,15 @@ public class Hero : ScriptableObject
     public float physicalATK;
     public float armor;
     public float physicalPEN;
-    public float Lifesteal;
+    public float physicalLifesteal;
+    public float spellVamp;
 
     public float healthRegen;
     public float manaRegen;
     public float magicPower;
     public float magicRES;
     public float magicPEN;
-    public float spellVamp;
+    public float magicalLifesteal;
 
     public float movementSPD;
     public float cdReduction;
@@ -42,8 +43,7 @@ public class Hero : ScriptableObject
     public float maxExp;
     public float currentexp;
 
-    public List<Skill> abilities = new List<Skill>();
-
-    public Skill basicAttack;
+    public List<GameObject> abilities = new List<GameObject>();
+    public GameObject basicAttack;
 
 }

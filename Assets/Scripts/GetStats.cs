@@ -9,7 +9,7 @@ public class GetStats : MonoBehaviour
     public ProgressBar manaBar;
 
     public Skill selectedSkill;
-    private GetSkillIcons getSkillIcons;
+    public GetSkillIcons getSkillIcons { get; private set; }
 
     [SerializeField]
     private bool HaveSkillIcons = false;

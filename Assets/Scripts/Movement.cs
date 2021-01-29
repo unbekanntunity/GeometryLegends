@@ -13,6 +13,8 @@ public class Movement : MonoBehaviour
     private KeyCode jumpKey;
     [SerializeField]
     private KeyCode slideKey;
+    [SerializeField]
+    private KeyCode shopKey;
 
     [SerializeField]
     private float speed = 12f;
@@ -54,9 +56,8 @@ public class Movement : MonoBehaviour
     [SerializeField]
     private float aimSpeed;
 
-    [SerializeField]
-    private GameObject weaponPos;
-    public GameObject WeaponPos { get { return weaponPos; } private set { weaponPos = value; } }
+    [field: SerializeField]
+    public GameObject WeaponPos { get; private set; }
 
     [SerializeField]
     private GameObject groundCheck;
@@ -89,16 +90,23 @@ public class Movement : MonoBehaviour
     private GetStats getStats;
     private GetSkillIcons skillIcons;
     private SphereCollider colliderForRange;
-    public List<GetStats> targetsInRange = new List<GetStats>();
+    private ShopSystem shopSystem;
+    private List<GetStats> targetsInRange = new List<GetStats>();
+
+    public List<GameObject> ColliderInRange { get; private set; } = new List<GameObject>();
 
     private void Awake()
     {
-        skillIcons = GetComponentInChildren<GetSkillIcons>();
+        getStats = GetComponent<GetStats>();
+        getStats.selectedSkill = getStats.hero.basicAttack.GetComponent<Skill>();
+
+        shopSystem = GetComponentInChildren<ShopSystem>();
+        shopSystem.gameObject.SetActive(false);
+
         characterController = GetComponent<CharacterController>();
         colliderForRange = GetComponent<SphereCollider>();
-        getStats = GetComponent<GetStats>();
-        getStats.selectedSkill = getStats.hero.basicAttack;
         originalHeight = characterController.height;
+
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
@@ -150,9 +158,10 @@ public class Movement : MonoBehaviour
             currentSpeed = speed;
 
         if (Input.GetKeyDown(jumpKey) && (isGrounded || isWallRunning))
-        {
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
-        }
+
+        if (Input.GetKeyDown(shopKey))
+            shopSystem.ControlInterface();
     }
 
 
@@ -166,7 +175,6 @@ public class Movement : MonoBehaviour
 
     private void EndAim()
     {
-        print("AA");
         playerCamera.fieldOfView = Mathf.Lerp(aimFOV, normalFOV, aimFOVLerpTime);
         currentSpeed = speed;
         isAiming = false;
@@ -191,7 +199,7 @@ public class Movement : MonoBehaviour
         xRotation -= mouseY;
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
         playerCamera.transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
-        weaponPos.transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+        WeaponPos.transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
         transform.Rotate(Vector3.up * mouseX);
     }
 
@@ -201,23 +209,15 @@ public class Movement : MonoBehaviour
         {
             if (Input.GetKeyDown(AbilityControls[i]))
             {
-                for (int m = 0; m < skillIcons.icons.Count - 1; m++)
-                    skillIcons.icons[m].enabled = false;
+                for (int m = 0; m < getStats.getSkillIcons.icons.Count - 1; m++)
+                    if (i != m)
+                        getStats.getSkillIcons.icons[m].selected.enabled = false;
 
-                if (skillIcons.icons[i].enabled)
-                {
-                    getStats.selectedSkill = getStats.hero.basicAttack;
-                    skillIcons.icons[i].enabled = false;
-                }
-                else
-                {
-                    getStats.selectedSkill = getStats.hero.abilities[i];
-                    skillIcons.icons[i].enabled = true;
-                }
+                getStats.getSkillIcons.icons[i].SelectIcon();
+                getStats.selectedSkill = (getStats.selectedSkill == getStats.hero.abilities[i].GetComponent<Skill>()) ? getStats.hero.basicAttack.GetComponent<Skill>() : getStats.hero.abilities[i].GetComponent<Skill>();
             }
         }
     }
-
 
     private void CreateRangeField()
     {
@@ -230,7 +230,6 @@ public class Movement : MonoBehaviour
         {
             if (getStats.selectedSkill.skillType == SkillType.SingleTarget && getStats.selectedSkill.needTarget)
             {
-
                 RaycastHit hit;
                 if (Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out hit, getStats.selectedSkill.range))
                 {
@@ -245,11 +244,10 @@ public class Movement : MonoBehaviour
                 }
 
             }
-            else
+            else if (getStats.selectedSkill.needTarget == false)
             {
-                RaycastHit hit;
-                if(Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out hit, 1000f))
-                    getStats.selectedSkill.CastSkill(gameObject, hit.point);
+                Vector3 pos = playerCamera.transform.position + playerCamera.transform.forward * getStats.selectedSkill.range;
+                getStats.selectedSkill.CastSkill(gameObject, pos);
             }
         }
     }
@@ -334,6 +332,18 @@ public class Movement : MonoBehaviour
 
         if (!found)
             targetsInRange.Add(other.gameObject.GetComponent<GetStats>());
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        ColliderInRange.Add(collision.collider.gameObject);
+
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        ColliderInRange.Remove(collision.collider.gameObject);
+
     }
 }
 /*  if (Mathf.Abs(wallRunCameraTilt) < maxWallRunCameraTilt && isWallRunning && isWallRight)

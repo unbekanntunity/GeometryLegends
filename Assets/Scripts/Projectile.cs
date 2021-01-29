@@ -6,28 +6,38 @@ public class Projectile : MonoBehaviour
     public float bulletSpeed;
     public Vector3 targetPoint;
 
-    private Vector3 startPoint;
     private float range;
     private Rigidbody rig;
 
     private void Start()
     {
-        startPoint = user.transform.position;
         range = user.GetComponent<GetStats>().selectedSkill.range;
         rig = GetComponent<Rigidbody>();
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
-        while(Vector3.Distance(startPoint, gameObject.transform.position) <= range)
-        gameObject.transform.position = Vector3.RotateTowards(gameObject.transform.position, targetPoint, 360f, 360f);
+        Vector3 targetDirection = targetPoint - transform.position;
+        
+        float singleStep =  1f * Time.deltaTime;
+
+        Vector3 newDirection = Vector3.RotateTowards(transform.forward, targetDirection, singleStep, 0.0f);
+    
+        transform.rotation = Quaternion.LookRotation(newDirection);
         rig.AddForce(gameObject.transform.forward * bulletSpeed * Time.deltaTime);
+
+
+        if (Vector3.Distance(gameObject.transform.position, targetPoint) < 0.4f)
+            Destroy(gameObject);
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider other)
     {
+        if (other.gameObject == user)
+            return;
+
         Destroy(gameObject);
-        if(collision.collider.gameObject.GetComponent<GetStats>())
-            DamageHandler.DealDamage(user.GetComponent<GetStats>(), collision.collider.gameObject.GetComponent<GetStats>());
+        if (other.gameObject.GetComponent<GetStats>())
+            DamageHandler.DealDamage(user.GetComponent<GetStats>(), other.gameObject.GetComponent<GetStats>());
     }
 }

@@ -1,12 +1,12 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
+﻿using System.Collections;
+using UnityEngine;
 
 public enum SkillType
 {
     AoE, SingleTarget
 }
 
-public abstract class Skill : ScriptableObject
+public abstract class Skill : MonoBehaviour
 {
     public DamageType damageType;
     public SkillType skillType;
@@ -18,11 +18,15 @@ public abstract class Skill : ScriptableObject
     public float additionalPercent;
     public float range;
     public bool needTarget;
-
-    public Sprite skillIcon; 
+    public Sprite skillIcon;
+    public bool onCooldown = false;
 
     public abstract void CastSkill(GameObject user, GameObject target);
     public abstract void CastSkill(GameObject user, Vector3 targetPoint);
-    public abstract void CastSkill(GameObject user);
 
+    public IEnumerator CoolDown()
+    {
+        yield return new WaitForSecondsRealtime(cooldown);
+        onCooldown = false;
+    }
 }
