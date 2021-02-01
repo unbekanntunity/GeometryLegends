@@ -9,8 +9,12 @@ public class ItemShop : MonoBehaviour
     public int X_START_ITEM;
     public int Y_START_ITEM;
     public int X_SPACE_BETWEEN_ITEM;
-    public int Y_SPACE_BETWEEN_ITEM;
-    public int NUMBER_OF_COLUMN;
+    public int NUMBER_OF_COLUMN_ITEM;
+
+    [Header("Layout")]
+    public int X_START_LAYOUT;
+    public int Y_START_LAYOUT;
+    public int Y_SPACE_BETWEEN_LAYOUT;
 
     [SerializeField]
     private GameObject contentPanel, itemPlaceHolder, layoutpanel;
@@ -29,6 +33,7 @@ public class ItemShop : MonoBehaviour
         {
             var verticalLayoutGroup = Instantiate(layoutpanel, Vector3.zero, Quaternion.identity);
             verticalLayoutGroup.transform.SetParent(contentPanel.transform);
+            verticalLayoutGroup.GetComponent<RectTransform>().localPosition = GetPositionLayout(i);
             verticalLayoutGroups.Add(verticalLayoutGroup);
         }
 
@@ -46,7 +51,12 @@ public class ItemShop : MonoBehaviour
 
     public Vector3 GetPositionItem(int i)
     {
-        return new Vector3(X_START_ITEM + X_SPACE_BETWEEN_ITEM * (i % NUMBER_OF_COLUMN), 0f, 0f);
+        return new Vector3(X_START_ITEM + X_SPACE_BETWEEN_ITEM * (i % NUMBER_OF_COLUMN_ITEM), Y_START_ITEM, 0f);
+    }
+
+    public Vector3 GetPositionLayout(int i)
+    {
+        return new Vector3(X_START_LAYOUT, Y_START_LAYOUT - Y_SPACE_BETWEEN_LAYOUT * i, 0f);
     }
 }
 
