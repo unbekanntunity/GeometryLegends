@@ -62,6 +62,8 @@ public class SimpleCrosshair : MonoBehaviour
         crosshairCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
 
         crosshairGameObject.AddComponent<CanvasScaler>();
+        crosshairGameObject.transform.SetParent(gameObject.transform);
+
 
         GameObject imageGameObject = new GameObject();
         imageGameObject.name = "Crosshair Image";

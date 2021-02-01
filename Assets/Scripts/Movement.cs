@@ -83,6 +83,7 @@ public class Movement : MonoBehaviour
     public bool isSliding = false;
     public bool isWallRunning = false;
     public bool isAiming = false;
+    public bool inScene = true;
 
     private Vector3 move;
     private Vector3 velocity;
@@ -91,12 +92,15 @@ public class Movement : MonoBehaviour
     private GetSkillIcons skillIcons;
     private SphereCollider colliderForRange;
     private ShopSystem shopSystem;
-    private List<GetStats> targetsInRange = new List<GetStats>();
+    private SimpleCrosshair crossHair;
 
+    private List<GetStats> targetsInRange = new List<GetStats>();
     public List<GameObject> ColliderInRange { get; private set; } = new List<GameObject>();
 
     private void Awake()
     {
+        crossHair = GetComponentInChildren<SimpleCrosshair>();
+
         getStats = GetComponent<GetStats>();
         getStats.selectedSkill = getStats.hero.basicAttack.GetComponent<Skill>();
 
@@ -117,12 +121,12 @@ public class Movement : MonoBehaviour
     {
         MyInput();
         Look();
+        SetCursorState();
         CheckForAbilities();
         CreateRangeField();
         CheckForWall();
         WallrunInput();
         Gravity();
-
     }
 
     private void MyInput()
@@ -161,9 +165,10 @@ public class Movement : MonoBehaviour
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
 
         if (Input.GetKeyDown(shopKey))
-            shopSystem.ControlInterface();
+        {
+            inScene = !shopSystem.ControlInterface();
+        }
     }
-
 
     private void StartAim()
     {
@@ -186,11 +191,13 @@ public class Movement : MonoBehaviour
         {
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
+            crossHair.gameObject.SetActive(true);
         }
         else if (Input.GetKeyDown(mouseFocusOff))
         {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
+            crossHair.gameObject.SetActive(false);
         }
 
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
@@ -201,6 +208,12 @@ public class Movement : MonoBehaviour
         playerCamera.transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
         WeaponPos.transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
         transform.Rotate(Vector3.up * mouseX);
+    }
+
+    private void SetCursorState()
+    {
+        Cursor.visible = (!inScene) ? true : false;
+        Cursor.lockState = (!inScene) ? CursorLockMode.None : CursorLockMode.Locked;
     }
 
     private void CheckForAbilities()

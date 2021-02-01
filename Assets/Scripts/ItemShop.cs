@@ -1,33 +1,52 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class ItemShop : MonoBehaviour
 {
-    private ItemSlot[] itemSlot;
     public List<Item> items = new List<Item>();
+
+    [Header("ItemSlots")]
+    public int X_START_ITEM;
+    public int Y_START_ITEM;
+    public int X_SPACE_BETWEEN_ITEM;
+    public int Y_SPACE_BETWEEN_ITEM;
+    public int NUMBER_OF_COLUMN;
+
+    [SerializeField]
+    private GameObject contentPanel, itemPlaceHolder, layoutpanel;
+
+    private int verticalLayoutGroupIndex = 0;
+    private List<GameObject> verticalLayoutGroups = new List<GameObject>();
 
     private void Awake()
     {
-        itemSlot = GetComponentsInChildren<ItemSlot>();
         CreateInventory();
     }
 
     public void CreateInventory()
     {
-        for (int i = 0; i < itemSlot.Length; i++)
+        for (int i = 0; i < (items.Count / 4) + 1; i++)
         {
-            try
-            {
-                itemSlot[i].item = items[i];
-                itemSlot[i].name = items[i].itemName;
-                itemSlot[i].GetComponentInChildren<Image>().sprite = items[i].image;
-            }
-            catch (Exception e)
-            {
-                continue;
-            }
+            var verticalLayoutGroup = Instantiate(layoutpanel, Vector3.zero, Quaternion.identity);
+            verticalLayoutGroup.transform.SetParent(contentPanel.transform);
+            verticalLayoutGroups.Add(verticalLayoutGroup);
+        }
+
+        for (int i = 0; i < items.Count; i++)
+        {
+            if (i % 4 == 0 && i != 0)
+                verticalLayoutGroupIndex += 1;
+
+            var obj = Instantiate(itemPlaceHolder, Vector3.zero, Quaternion.identity, transform);
+            obj.transform.SetParent(verticalLayoutGroups[verticalLayoutGroupIndex].transform);
+            obj.GetComponent<RectTransform>().localPosition = GetPositionItem(i);
+            obj.GetComponent<ItemSlot>().SetItem(items[i]);
         }
     }
+
+    public Vector3 GetPositionItem(int i)
+    {
+        return new Vector3(X_START_ITEM + X_SPACE_BETWEEN_ITEM * (i % NUMBER_OF_COLUMN), 0f, 0f);
+    }
 }
+

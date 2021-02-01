@@ -4,8 +4,8 @@ public class ShopSystem : MonoBehaviour
 {
     private Movement movement;
 
-    private bool inRangeOfShop = false;
     private bool found = false;
+    private bool inRangeOfShop = false;
 
     private void Awake()
     {
@@ -29,11 +29,17 @@ public class ShopSystem : MonoBehaviour
             inRangeOfShop = false;
     }
 
-    public void ControlInterface()
+    public bool ControlInterface()
     {
         if (gameObject.activeInHierarchy)
+        {
             gameObject.SetActive(false);
+            return false;
+        }
         else
+        {
             gameObject.SetActive(true);
+            return true;
+        }
     }
 }

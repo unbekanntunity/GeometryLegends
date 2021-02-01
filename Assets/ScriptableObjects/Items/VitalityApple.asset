@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b20682ecacc48d40b4a5ab876f76192, type: 3}
+  m_Name: VitalityApple
+  m_EditorClassIdentifier: 
+  itemName: Vitality Apple
+  goldprice: 300
+  image: {fileID: 21300000, guid: 8e1f416c7d68f5f4494ad45eee82af26, type: 3}
+  magicPower: 0
+  mana: 0
+  manaRegeneration: 0
+  magicalPenetration: 0
+  magicalLifesteal: 0
+  physicalAttack: 0
+  attackSpeed: 0
+  physicalPenetration: 0
+  lifesteal: 0
+  spellVamp: 0
+  criticalChance: 0
+  cooldownReduction: 0
+  hp: 230
+  hpRegeneration: 0
+  armor: 0
+  magicResistance: 0
+  movementSpeed: 0
