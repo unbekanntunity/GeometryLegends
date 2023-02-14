@@ -6,15 +6,20 @@ public class PlayerNetwork : NetworkBehaviour
 
     [SerializeField] private float MoveSpeed = 3f;
 
-    private NetworkVariable<int> randomNumber = new(1);
-
-
     private void Update()
     {
         if (!IsOwner)
         {
             return;
         }
+
+        UpdateMovementServerRpc(OwnerClientId);
+    }
+
+    [ServerRpc]
+    private void UpdateMovementServerRpc(ulong clientId)
+    {
+        var body = NetworkManager.ConnectedClients;
 
         var moveDir = new Vector3(0, 0, 0);
 
@@ -39,5 +44,19 @@ public class PlayerNetwork : NetworkBehaviour
         }
 
         transform.position += MoveSpeed * Time.deltaTime * moveDir;
+
+
+        UpdateMovementClientRpc();
+    }
+
+    [ClientRpc]
+    public void UpdateMovementClientRpc()
+    {
+        if (!IsOwner)
+        {
+            return;
+        }
+
+       
     }
 }
